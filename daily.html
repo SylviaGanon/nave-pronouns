@@ -20,19 +20,19 @@
     <div class="box">
         <div class="timer">⚡ אימון יומי של 2 דקות!</div>
         <p style="font-weight:700; margin-bottom:10px;">לחץ על הקלף כדי לגלות את הפירוש בעברית:</p>
-        <div class="flash-card" id="flashCard" onclick="flipCard()">He</div>
+        <div class="flash-card" id="flashCard" onclick="flipCard()">I</div>
         <button style="background:#f59e0b; color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:700; cursor:pointer;" onclick="nextCard()">הקלף הבא ⬅️</button>
     </div>
 
     <script>
         const cards = [
-            { en: 'He', he: 'הוא (בן)' },
-            { en: 'She', he: 'היא (בת)' },
-            { en: 'They', he: 'הם / הן' },
             { en: 'I', he: 'אני' },
             { en: 'You', he: 'אתה / את' },
+            { en: 'He', he: 'הוא (בן)' },
+            { en: 'She', he: 'היא (בת)' },
+            { en: 'It', he: 'זה (חפץ/חיה)' },
             { en: 'We', he: 'אנחנו' },
-            { en: 'It', he: 'זה (חפץ/חיה)' }
+            { en: 'They', he: 'הם / הן' }
         ];
         let idx = 0;
         let isFlipped = false;
