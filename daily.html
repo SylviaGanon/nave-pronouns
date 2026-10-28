@@ -79,4 +79,64 @@
 
             if (mode === 'en2he') {
                 // Mode 1: English prompt -> Choose Hebrew answer
-                const wrongChoices = pronouns
+                const wrongChoices = pronouns.filter(p => p.en !== item.en);
+                const options = shuffle([item, ...shuffle(wrongChoices).slice(0, 3)]);
+
+                container.innerHTML = `
+                    <button class="audio-btn" onclick="playAudio('${item.en}')">🔊</button>
+                    <div class="prompt-display">${item.en}</div>
+                    <div class="grid">
+                        ${options.map(opt => `<button class="opt-btn" onclick="checkMC(this, '${opt.en}', '${item.en}')">${opt.he}</button>`).join('')}
+                    </div>
+                `;
+                playAudio(item.en);
+            } else {
+                // Mode 2: Hebrew prompt -> Type/Write English word
+                container.innerHTML = `
+                    <div class="prompt-display" style="direction:rtl; font-family:'Rubik', sans-serif; color:#b45309; background:#fffbeb;">${item.he}</div>
+                    <input type="text" id="dailyInput" class="type-box" placeholder="כתוב באנגלית..." autofocus />
+                    <br>
+                    <button class="action-btn" onclick="checkTyped('${item.en}')">בדוק תשובה ✨</button>
+                `;
+            }
+        }
+
+        function checkMC(btn, selectedEn, correctEn) {
+            const allBtns = document.querySelectorAll('.opt-btn');
+            if (selectedEn === correctEn) {
+                btn.classList.add('correct');
+                confetti({ particleCount: 40, spread: 50 });
+                setTimeout(nextCard, 1000);
+            } else {
+                btn.classList.add('wrong');
+            }
+        }
+
+        function checkTyped(correctEn) {
+            const input = document.getElementById('dailyInput').value.trim();
+            if (input.toLowerCase() === correctEn.toLowerCase()) {
+                confetti({ particleCount: 40, spread: 50 });
+                playAudio(correctEn);
+                setTimeout(nextCard, 1000);
+            } else {
+                alert(`נסה שוב! רמז: המילה מתחילה ב-${correctEn[0]}`);
+            }
+        }
+
+        function playAudio(text) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.8;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function nextCard() {
+            idx = (idx + 1) % activeDeck.length;
+            renderCard();
+        }
+
+        switchMode('en2he');
+    </script>
+</body>
+</html>
