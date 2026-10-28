@@ -23,7 +23,7 @@
         .input-box { width: 80%; padding: 10px; font-size: 1.2rem; font-weight: 700; text-align: center; border: 2px solid #0284c7; border-radius: 10px; margin-bottom: 10px; direction: ltr; }
         .paper-card { background: #fffbeb; border: 2px dashed #f59e0b; padding: 15px; border-radius: 14px; margin-bottom: 15px; }
         .line-guide { font-family: 'Fredoka', sans-serif; font-size: 2.5rem; color: #d97706; text-decoration: underline; letter-spacing: 2px; }
-        .action-btn { background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .action-btn { background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 1rem; }
     </style>
 </head>
 <body>
@@ -38,13 +38,22 @@
 
     <script>
         let currentLvl = 1;
-        const questions = [
-            { prompt: '👦 ילד אחד (הוא)', answer: 'He', options: ['He', 'She', 'They', 'It'] },
-            { prompt: '👧 ילדה אחת (היא)', answer: 'She', options: ['He', 'She', 'They', 'It'] },
-            { prompt: '👦👧 קבוצת ילדים (הם)', answer: 'They', options: ['He', 'She', 'They', 'It'] },
-            { prompt: '🐶 כלב / חפץ (זה)', answer: 'It', options: ['He', 'She', 'They', 'It'] }
+        const allQuestions = [
+            { prompt: '👦 ילד אחד (הוא)', answer: 'He' },
+            { prompt: '👧 ילדה אחת (היא)', answer: 'She' },
+            { prompt: '👦👧 קבוצת אנשים (הם / הן)', answer: 'They' },
+            { prompt: '👍 טפיחה על החזה (אני)', answer: 'I' },
+            { prompt: '👉 מצביע אל המורה (אתה / את)', answer: 'You' },
+            { prompt: '🙌 חיבוק באוויר לשנינו (אנחנו)', answer: 'We' },
+            { prompt: '🐶 כלב / חפץ (זה)', answer: 'It' }
         ];
+        
+        const allPronouns = ['I', 'You', 'He', 'She', 'It', 'We', 'They'];
         let qIdx = 0;
+
+        function shuffle(array) {
+            return [...array].sort(() => Math.random() - 0.5);
+        }
 
         function setLevel(lvl) {
             currentLvl = lvl;
@@ -57,12 +66,17 @@
 
         function renderQuestion() {
             const card = document.getElementById('quizCard');
-            const q = questions[qIdx];
+            const q = allQuestions[qIdx];
+            
             if (currentLvl === 1) {
+                // Generate 1 correct + 3 wrong distractors from allPronouns
+                const wrongChoices = allPronouns.filter(p => p !== q.answer);
+                const options = shuffle([q.answer, ...shuffle(wrongChoices).slice(0, 3)]);
+
                 card.innerHTML = `
                     <div class="prompt-text">${q.prompt}</div>
                     <div class="grid">
-                        ${q.options.map(opt => `<button class="opt-btn" onclick="checkMC(this, '${opt}', '${q.answer}')">${opt}</button>`).join('')}
+                        ${options.map(opt => `<button class="opt-btn" onclick="checkMC(this, '${opt}', '${q.answer}')">${opt}</button>`).join('')}
                     </div>
                 `;
             } else if (currentLvl === 2) {
@@ -107,7 +121,7 @@
         }
 
         function nextQuestion() {
-            qIdx = (qIdx + 1) % questions.length;
+            qIdx = (qIdx + 1) % allQuestions.length;
             renderQuestion();
         }
 
