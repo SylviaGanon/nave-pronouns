@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>לומדים כינויי גוף - נווה</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Rubik:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Rubik', sans-serif; background: #f0f9ff; padding: 15px; color: #0f172a; display: flex; flex-direction: column; align-items: center; }
+        .back-nav { width: 100%; max-width: 500px; margin-bottom: 15px; }
+        .back-btn { text-decoration: none; color: #0284c7; font-weight: 700; font-size: 1rem; }
+        .tab-row { display: flex; gap: 8px; width: 100%; max-width: 500px; margin-bottom: 15px; }
+        .tab { flex: 1; padding: 10px; border: 2px solid #bae6fd; background: #ffffff; border-radius: 12px; font-weight: 700; color: #0369a1; cursor: pointer; text-align: center; }
+        .tab.active { background: #0284c7; color: white; border-color: #0284c7; }
+        .card-container { width: 100%; max-width: 500px; }
+        .p-card { background: white; border-radius: 20px; padding: 20px; border: 2px solid #cbd5e1; margin-bottom: 15px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .pronoun-title { font-family: 'Fredoka', sans-serif; font-size: 3rem; color: #0284c7; direction: ltr; margin-bottom: 5px; }
+        .hebrew-sub { font-size: 1.4rem; font-weight: 700; color: #334155; margin-bottom: 5px; }
+        .phonetic { font-size: 1rem; color: #d97706; margin-bottom: 12px; }
+        .gesture-box { background: #fef3c7; border: 1.5px dashed #f59e0b; padding: 10px; border-radius: 12px; font-weight: 700; color: #b45309; margin-bottom: 12px; }
+        .audio-btn { background: #f59e0b; color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="back-nav"><a href="index.html" class="back-btn">➡️ חזרה למרכז</a></div>
+    <div class="tab-row">
+        <button class="tab active" onclick="showGroup('third')">He/She/They</button>
+        <button class="tab" onclick="showGroup('first')">I/You/We</button>
+        <button class="tab" onclick="showGroup('it')">It</button>
+    </div>
+    <div class="card-container" id="cardContainer"></div>
+
+    <script>
+        const groups = {
+            third: [
+                { pronoun: 'He', hebrew: 'הוּא', phonetic: 'הִי-וּ', gesture: '👦 הצבע על בן / גבר!', sentence: 'He is happy' },
+                { pronoun: 'She', hebrew: 'הִיא', phonetic: 'שִׁי', gesture: '👧 הצבע על בת / אישה!', sentence: 'She is sleeping' },
+                { pronoun: 'They', hebrew: 'הֵם / הֵן', phonetic: 'דֵיי', gesture: '👦👧 הצבע על קבוצה (יותר מאחד)!', sentence: 'They are playing' }
+            ],
+            first: [
+                { pronoun: 'I', hebrew: 'אֲנִי', phonetic: 'אַאי', gesture: '👍 טופח עם שתי האגודלים על החזה!', sentence: 'I am Nave' },
+                { pronoun: 'You', hebrew: 'אַתָּה / אַתְּ', phonetic: 'יוּ', gesture: '👉 מצביע ישר אל המורה במסך!', sentence: 'You are the teacher' },
+                { pronoun: 'We', hebrew: 'אֲנַחְנוּ', phonetic: 'וִוי', gesture: '🙌 עושה חיבוק גדול באוויר לשנינו!', sentence: 'We are a team' }
+            ],
+            it: [
+                { pronoun: 'It', hebrew: 'זֶה (חפץ / חיה)', phonetic: 'אִיט', gesture: '🐶 הצבע על חפץ או חיה בחדר!', sentence: 'It is a dog' }
+            ]
+        };
+
+        function showGroup(groupName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            const container = document.getElementById('cardContainer');
+            container.innerHTML = '';
+            groups[groupName].forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'p-card';
+                card.innerHTML = `
+                    <div class="pronoun-title">${item.pronoun}</div>
+                    <div class="hebrew-sub">${item.hebrew}</div>
+                    <div class="phonetic">נשמע כמו: ${item.phonetic}</div>
+                    <div class="gesture-box">תנועת גוף: ${item.gesture}</div>
+                    <button class="audio-btn" onclick="playAudio('${item.sentence}')">🔊 השמע משפט: "${item.sentence}"</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function playAudio(text) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.8;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        showGroup('third');
+    </script>
+</body>
+</html>
